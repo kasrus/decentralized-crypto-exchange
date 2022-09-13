@@ -6,7 +6,8 @@ const tokens = (n)=> {
 }
 
 describe('Token', ()=> {
-   let token, accounts, deployer;
+   let token, accounts, deployer, receiver;
+   
    beforeEach(async()=> {
       //fetch token from the blockchain
       const Token = await ethers.getContractFactory('Token');
@@ -14,6 +15,7 @@ describe('Token', ()=> {
 
       accounts = await ethers.getSigners();
       deployer = accounts[0]; //same as msg.sender
+      receiver = accounts[1];
    })
 
    describe('Deployment', ()=> {
@@ -41,5 +43,47 @@ describe('Token', ()=> {
          expect(await token.balanceOf(deployer.address)).to.equal(totalSupply);
       })
    })
+
+   describe('Sending Tokens', ()=> {
+      let amount, transaction, result; 
+      
+      describe ('Success', ()=> {
+         beforeEach(async()=> {
+            amount = tokens(100);
+            //Transfer tokens-> need to call transfer function from token
+            transaction = await token.connect(deployer).transfer(receiver.address, amount);
+            result = await transaction.wait(); //wait for the entire transaction to finish
+         })
+
+         it('transfers token balances', async()=> {
+            //wait for the transaction to be included in the block
+            //Ensure that tokens were transfered (balance changed)
+            expect(await token.balanceOf(deployer.address)).to.equal(tokens(999900));
+            expect(await token.balanceOf(receiver.address)).to.equal(amount);
+         })
    
+         it('emits a Transfer event', async()=> {
+            const event = result.events[0];
+            expect(event.event).to.equal('Transfer');
+            const args = event.args;
+            //Then check the individual arguments
+            expect(args._from).to.equal(deployer.address);
+            expect(args._to).to.equal(receiver.address);
+            expect(args._value).to.equal(amount);
+         })
+      })
+      
+      describe ('Failure', ()=> {
+         it('rejects insufficient balances', async()=> {
+            //Transfer tokens more than what the deployer has - 10M tokens
+            const invalidAmount = tokens(100000000);
+            await expect(token.connect(deployer).transfer(receiver.address, invalidAmount)).to.be.reverted;
+         })
+
+         it('rejects invalid recipient', async () => {
+            amount = tokens(100);
+            await expect(token.connect(deployer).transfer('0x0000000000000000000000000000000000000000', amount)).to.be.reverted;
+         })
+      })
+   })
 })
