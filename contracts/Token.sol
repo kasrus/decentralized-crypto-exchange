@@ -10,11 +10,14 @@ contract Token {
     uint8 public decimals = 18;
     uint256 public totalSupply;
 
-    //Track balances
+    //Track balance
     mapping(address => uint256) public balanceOf;
+    //Track the approved spenders & the amount of the owner of the account
+    mapping(address => mapping(address=> uint256)) public allowance;
     
     //Event
     event Transfer(address indexed _from, address indexed _to, uint256 _value);
+    event Approval(address indexed _owner, address indexed _spender, uint256 _value);
 
     constructor(string memory _name, string memory _symbol, uint256 _totalSupply) {
         name = _name;
@@ -34,6 +37,15 @@ contract Token {
         balanceOf[_to] += _value;
 
         emit Transfer(msg.sender, _to, _value);
+
+        return true;
+    }
+
+    function approve(address _spender, uint256 _value) public returns(bool success) {
+        require(_spender != address(0));
+        
+        allowance[msg.sender][_spender] = _value;
+        emit Approval(msg.sender, _spender,  _value);
 
         return true;
     }
