@@ -36,12 +36,14 @@ contract Token {
 
         return true;
     }
-
+    
+    //internal function 
     function _transfer(
         address _from,
         address _to,
         uint256 _value
     ) internal {
+        //make sure the receiving address is valid
         require(_to != address(0));
 
         //deduct tokens from spender
@@ -63,9 +65,10 @@ contract Token {
     function transferFrom(address _from, address _to, uint256 _value) 
         public
         returns (bool success) {
+
         //check approval
-        require(_value <= allowance[_from][msg.sender]);
-        require(_value <= balanceOf[_from]);
+        require(_value <= allowance[_from][msg.sender], 'insufficient balance');
+        require(_value <= balanceOf[_from], 'insufficient allowance');
 
         //resetting the allowance to prevent double spending
         allowance[_from][msg.sender] -= _value;

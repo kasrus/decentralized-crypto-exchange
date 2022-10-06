@@ -11,7 +11,7 @@ describe('Token', ()=> {
    beforeEach(async()=> {
       //fetch token from the blockchain
       const Token = await ethers.getContractFactory('Token');
-      token = await Token.deploy('Dapp University', 'DAPP', 1000000); 
+      token = await Token.deploy('DApp University', 'DAPP', 1000000); 
 
       accounts = await ethers.getSigners();
       deployer = accounts[0]; //same as msg.sender
@@ -20,7 +20,7 @@ describe('Token', ()=> {
    })
 
    describe('Deployment', ()=> {
-      const name = 'Dapp University';
+      const name = 'DApp University';
       const symbol = 'DAPP';
       const decimals = 18;
       const totalSupply = tokens(1000000);
