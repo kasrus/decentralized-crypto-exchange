@@ -35,7 +35,17 @@ contract Exchange {
         //Emit an event that deposit happened
         emit Deposit(_token, msg.sender, _amount, balanceOf(_token, msg.sender));
     } 
-
+    
+    function withdrawToken(address _token, uint256 _amount) public {
+        //Ensure user has enough tokens to withdraw
+        require(tokens[_token][msg.sender] >= _amount);
+        //Transfer tokens to user from exchange
+        Token(_token).transfer(msg.sender, _amount);
+        //Update user balace
+        tokens[_token][msg.sender] -= _amount;
+        //Emit event
+        emit Withdraw(_token, msg.sender, _amount, tokens[_token][msg.sender]);
+    }
     //Check balances in the exchange - wrapper function
     function balanceOf(address _token, address _user)
         public
