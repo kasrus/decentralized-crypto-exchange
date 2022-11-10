@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
-import config from '../config.json';
 import { useDispatch } from 'react-redux';
+import config from '../config.json';
+
 import { 
     loadProvider, 
     loadNetwork, 
@@ -10,6 +11,7 @@ import {
 } from '../store/interactions';
 
 import Navbar from './Navbar';
+import Markets from './Markets';
 
 function App() {
     const dispatch = useDispatch();
@@ -35,6 +37,7 @@ function App() {
         //Load token smart contracts
         const DApp = config[chainId].DApp;
         const mETH = config[chainId].mETH;
+        
         await loadTokens(provider, [DApp.address, mETH.address], dispatch);
 
         //Load Exchange smart contract
@@ -50,14 +53,12 @@ function App() {
     return (
       <div>
   
-        {/* Navbar */}
         <Navbar />
 
         <main className='exchange grid'>
           <section className='exchange__section--left grid'>
   
-            {/* Markets */}
-  
+            <Markets />
             {/* Balance */}
   
             {/* Order */}
