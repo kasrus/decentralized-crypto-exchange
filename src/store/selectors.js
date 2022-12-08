@@ -3,7 +3,9 @@ import { get, groupBy, reject, maxBy, minBy } from 'lodash'
 import { ethers } from 'ethers'
 import moment  from 'moment'
 
+const account = state => get(state, 'provider.account')
 const tokens = state => get(state, 'tokens.contracts')
+
 const allOrders = state => get(state, 'exchange.allOrders.data', [])
 const cancelledOrders = state => get(state, 'exchange.cancelledOrders.data', [])
 const filledOrders = state => get(state, 'exchange.filledOrders.data', [])
@@ -24,6 +26,54 @@ const openOrders = state => {
 const GREEN = '#25CE8F'
 const RED = '#F45353'
 
+// -------------------------------------------------------------
+// MY OPEN ORDERS
+export const myOpenOrdersSelector = createSelector(
+    account,
+    tokens,
+    openOrders,
+    (account, tokens, orders) => {
+        if(!tokens[0] || !tokens[1]) { return } //safeguarding so it doesn't crash
+
+        //Filter orders created by current account
+        orders = orders.filter((o) => o.user === account)
+
+        //Filter orders by selected tokens - this basically to filter 
+        //so that it only shows to the applicable trading pair
+        orders = orders.filter((o) => o.tokenGet === tokens[0].address || o.tokenGet === tokens[1].address)
+        orders = orders.filter((o) => o.tokenGive === tokens[0].address || o.tokenGive === tokens[1].address)
+
+        //Decorate orders - add display attributes
+        orders = decorateMyOpenOrders(orders, tokens)
+
+        //Sort orders descending - recent one on top
+        orders = orders.sort((a, b) => b.timestamp - a.timestamp)
+
+        return orders
+    }
+)
+
+const decorateMyOpenOrders = (orders, tokens) => {
+    return (
+        orders.map((order) => {
+            order = decorateOrder(order, tokens)
+            order = decorateMyOpenOrder(order, tokens)
+            return (order)
+        })
+    )
+}
+
+//Individual order - going to apply the color
+const decorateMyOpenOrder = (order, tokens) => {
+    //first token - tokens[0] - is our token, which is our sell order 
+    //second token - tokens[1] - is token that we're getting, which is buy order
+    let orderType = order.tokenGive === tokens[1].address ? 'buy' : 'sell'
+
+    return ({
+        ...order, 
+        orderTypeClass: (orderType === 'buy' ? GREEN : RED)
+    })
+}
 
 const decorateOrder = (order, tokens) => {
     let token0Amount, token1Amount
