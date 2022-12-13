@@ -33,8 +33,6 @@ const PriceChart = () => {
                 <span className='up'>{priceChart.lastPrice}</span>
               </div>
             )}
-            
-  
           </div>
         </div>
   
@@ -44,7 +42,7 @@ const PriceChart = () => {
             <Chart 
                 type="candlestick"
                 options={options}
-                series={priceChart ? priceChart.series : defaultSeries}
+                series={priceChart ? priceChart.series : defaultSeries }
                 width="100%"
                 height="100%"
                 />
