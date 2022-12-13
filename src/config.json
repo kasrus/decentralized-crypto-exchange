@@ -17,16 +17,16 @@
     ,
     "5": {
         "exchange": {
-            "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
+            "address": "0xFe7ADC3c440ac066dCb92Bd2f1a8428dE0ae6355"
         },
         "DApp": {
-            "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+            "address": "0x2f9105B4255226aa06f437947069C7567a87742E"
         },
         "mETH": {
-            "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+            "address": "0xFA39635881Dcb07Eb1a4318B47fB7219E552715b"
         },
         "mDAI": {
-            "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
+            "address": "0x56E7eB8A13d1295954286d0D62a0C1144941f241"
         },
         "explorerURL": "https://goerli.etherscan.io/"
     }
