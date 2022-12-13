@@ -1,4 +1,3 @@
-import { set } from 'lodash'
 import { useEffect, useState, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -12,7 +11,6 @@ import {
 
 const Balance = () => {
     const [isDeposit, setIsDeposit] = useState(true)
-    const [isWithdraw, setIsWithdraw] = useState(true)
 
     const [token1TransferAmount, setToken1TransferAmount] = useState(0)
     const [token2TransferAmount, setToken2TransferAmount] = useState(0)
@@ -38,7 +36,6 @@ const Balance = () => {
       } else {
         setToken2TransferAmount(e.target.value)
       }
-    
     }
 
     // [x] Step 1: do transfer
@@ -74,12 +71,10 @@ const Balance = () => {
         e.target.className = 'tab tab--active'
         depositRef.current.className = 'tab'
         setIsDeposit(false)
-        setIsWithdraw(true)
       } else {
         e.target.className = 'tab tab--active'
         withdrawRef.current.className = 'tab'
         setIsDeposit(true)
-        setIsWithdraw(false)
       }
     }
 
@@ -87,7 +82,7 @@ const Balance = () => {
         if(exchange && tokens[0] && tokens[1] && account) {
             loadBalances(exchange, tokens, account, dispatch)
         }
-    }, [exchange, tokens, account, transferInProgress])
+    }, [exchange, tokens, account, transferInProgress, dispatch])
 
     return (
       <div className='component exchange__transfers'>
